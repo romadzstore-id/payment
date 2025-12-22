@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment - Romadz Store</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* =========================================
+           CSS STYLE LENGKAP
+           ========================================= */
+        :root {
+            /* Light Mode Variables */
+            --bg-color: #f0f4f8;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --card-bg: rgba(255, 255, 255, 0.85);
+            --card-border: rgba(255, 255, 255, 0.5);
+            --shadow-color: rgba(148, 163, 184, 0.15);
+            --shadow-hover: rgba(148, 163, 184, 0.3);
+            
+            /* Brand Colors */
+            --primary: #4f46e5;
+            --secondary: #0ea5e9;
+            --accent: #8b5cf6;
+            --success: #10b981;
+            
+            /* Gradients */
+            --gradient-main: linear-gradient(135deg, #4f46e5 0%, #8b5cf6 100%);
+            
+            /* Layout */
+            --radius-card: 20px;
+            --radius-btn: 12px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Dark Mode Override */
+        body.dark-mode {
+            --bg-color: #0f172a;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --shadow-color: rgba(0, 0, 0, 0.3);
+            --shadow-hover: rgba(79, 70, 229, 0.25);
+        }
+
+        /* Reset & Global */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            transition: var(--transition);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Background Animated Shapes */
+        .bg-shape {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: -1;
+            opacity: 0.6;
+            animation: floatShape 10s infinite alternate;
+        }
+        .shape-1 {
+            top: -10%; left: -10%; width: 500px; height: 500px;
+            background: radial-gradient(circle, var(--secondary), transparent);
+        }
+        .shape-2 {
+            bottom: -10%; right: -10%; width: 400px; height: 400px;
+            background: radial-gradient(circle, var(--accent), transparent);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            padding: 2rem 1.5rem;
+            z-index: 1;
+        }
+
+        /* Navbar */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+        }
+        .logo {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .logo i { color: var(--primary); }
+
+        .controls { display: flex; gap: 1rem; }
+
+        .btn-icon {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            color: var(--text-primary);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            box-shadow: 0 4px 6px var(--shadow-color);
+        }
+        .btn-icon:hover { transform: translateY(-2px); box-shadow: 0 8px 12px var(--shadow-hover); }
+
+        /* Header */
+        .header-section {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        .icon-floating {
+            font-size: 3rem;
+            background: var(--gradient-main);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+            display: inline-block;
+            animation: floatIcon 3s ease-in-out infinite;
+        }
+        .header-section h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.5px;
+        }
+        .header-section p { color: var(--text-secondary); }
+
+        /* Cards */
+        .payment-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: var(--radius-card);
+            padding: 1.5rem;
+            box-shadow: 0 10px 25px -5px var(--shadow-color);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 30px -10px var(--shadow-hover);
+            border-color: var(--primary);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--card-border);
+            padding-bottom: 1rem;
+        }
+
+        .method-logo {
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            font-weight: 800;
+            font-size: 0.8rem;
+            color: white;
+        }
+
+        .dana-bg { background: #118EEA; }
+        .ovo-bg { background: #4C3494; }
+        .gopay-bg { background: #00AED5; }
+        .qris-bg { background: var(--text-primary); color: var(--bg-color); }
+
+        .method-logo img { width: 100%; height: auto; }
+
+        .method-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .card-body { display: flex; flex-direction: column; gap: 0.5rem; }
+        .card-body.center-content { align-items: center; text-align: center; }
+
+        .account-name {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .number-display {
+            background: rgba(128, 128, 128, 0.1);
+            padding: 0.8rem;
+            border-radius: 8px;
+            font-family: 'Monaco', monospace;
+            font-weight: 600;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        /* Buttons */
+        .btn-action {
+            width: 100%;
+            padding: 0.8rem;
+            border: none;
+            border-radius: var(--radius-btn);
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .copy-btn {
+            background: var(--text-primary);
+            color: var(--bg-color);
+        }
+        .copy-btn:hover {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 0 15px var(--primary);
+        }
+        .copy-btn:active { transform: scale(0.97); }
+
+        .download-btn {
+            background: var(--gradient-main);
+            color: white;
+            margin-top: 1rem;
+        }
+        .download-btn:hover { opacity: 0.9; box-shadow: 0 0 20px rgba(139, 92, 246, 0.5); }
+
+        /* QRIS Specific */
+        .qr-container {
+            background: white;
+            padding: 0.5rem;
+            border-radius: 12px;
+            margin-bottom: 0.5rem;
+        }
+        .scan-text { font-size: 0.85rem; color: var(--text-secondary); }
+
+        /* Info Section */
+        .info-card {
+            background: rgba(14, 165, 233, 0.1);
+            border: 1px solid rgba(14, 165, 233, 0.2);
+            border-radius: var(--radius-card);
+            padding: 1.5rem;
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 3rem;
+        }
+        .info-icon { color: var(--secondary); font-size: 1.5rem; margin-top: 0.2rem; }
+        .info-content h3 { font-size: 1.1rem; margin-bottom: 0.5rem; }
+        .info-list { list-style: none; padding-left: 0; }
+        .info-list li {
+            position: relative;
+            padding-left: 1.2rem;
+            margin-bottom: 0.3rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        .info-list li::before {
+            content: "•"; color: var(--secondary);
+            position: absolute; left: 0; font-weight: bold;
+        }
+
+        /* Confirmation */
+        .confirmation-section { text-align: center; padding-bottom: 2rem; }
+        .confirmation-section p { margin-bottom: 1.5rem; color: var(--text-secondary); }
+
+        .confirm-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .btn-confirm {
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .whatsapp { background: #25D366; color: white; }
+        .telegram { background: #0088cc; color: white; }
+
+        .whatsapp:hover, .telegram:hover {
+            transform: translateY(-3px);
+            filter: brightness(1.1);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+        }
+
+        .copyright { font-size: 0.8rem; opacity: 0.5; margin-top: 2rem; }
+
+        /* Animations */
+        @keyframes floatShape {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(20px, 40px); }
+        }
+        @keyframes floatIcon {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .fade-in { animation: fadeIn 0.8s ease-out forwards; opacity: 0; }
+        @keyframes fadeIn { to { opacity: 1; } }
+        .slide-up { animation: slideUp 0.8s ease-out forwards; opacity: 0; transform: translateY(30px); }
+        @keyframes slideUp { to { opacity: 1; transform: translateY(0); } }
+
+        @media (max-width: 600px) {
+            .header-section h1 { font-size: 1.6rem; }
+            .payment-grid { grid-template-columns: 1fr; }
+            .confirm-buttons { flex-direction: column; width: 80%; margin: 0 auto 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-shape shape-1"></div>
+    <div class="bg-shape shape-2"></div>
+
+    <div class="container">
+        
+        <nav class="navbar">
+            <div class="logo">
+                <i class="fa-solid fa-shield-halved"></i> Romadz Store
+            </div>
+            <div class="controls">
+                <button id="lang-toggle" class="btn-icon" aria-label="Ganti Bahasa">
+                    <span id="lang-text">EN</span>
+                </button>
+                <button id="theme-toggle" class="btn-icon" aria-label="Ganti Tema">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+            </div>
+        </nav>
+
+        <header class="header-section fade-in">
+            <div class="icon-floating">
+                <i class="fa-solid fa-credit-card"></i>
+            </div>
+            <h1 data-i18n="pageTitle">Payment Romadz Store</h1>
+            <p data-i18n="pageSubtitle">Halaman Pembayaran Resmi & Aman</p>
+        </header>
+
+        <main class="payment-grid">
+            
+            <div class="card payment-card slide-up" style="animation-delay: 0.1s;">
+                <div class="card-header">
+                    <div class="method-logo dana-bg">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/7/72/Logo_dana_blue.svg" alt="DANA">
+                    </div>
+                    <span class="method-name">DANA</span>
+                </div>
+                <div class="card-body">
+                    <p class="account-name">Romadz Store Official</p>
+                    <div class="number-display">
+                        <span class="number-text">0812-3456-7890</span>
+                    </div>
+                    <button class="btn-action copy-btn" data-number="081234567890">
+                        <i class="fa-regular fa-copy"></i> <span data-i18n="btnCopy">Salin Nomor</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="card payment-card slide-up" style="animation-delay: 0.2s;">
+                <div class="card-header">
+                    <div class="method-logo ovo-bg">
+                        <span class="text-logo" style="color:white;">OVO</span>
+                    </div>
+                    <span class="method-name">OVO</span>
+                </div>
+                <div class="card-body">
+                    <p class="account-name">Romadz Store Official</p>
+                    <div class="number-display">
+                        <span class="number-text">0812-3456-7890</span>
+                    </div>
+                    <button class="btn-action copy-btn" data-number="081234567890">
+                        <i class="fa-regular fa-copy"></i> <span data-i18n="btnCopy">Salin Nomor</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="card payment-card slide-up" style="animation-delay: 0.3s;">
+                <div class="card-header">
+                    <div class="method-logo gopay-bg">
+                        <span class="text-logo" style="color:white;">GoPay</span>
+                    </div>
+                    <span class="method-name">GoPay</span>
+                </div>
+                <div class="card-body">
+                    <p class="account-name">Romadz Store Official</p>
+                    <div class="number-display">
+                        <span class="number-text">0812-3456-7890</span>
+                    </div>
+                    <button class="btn-action copy-btn" data-number="081234567890">
+                        <i class="fa-regular fa-copy"></i> <span data-i18n="btnCopy">Salin Nomor</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="card payment-card qris-card slide-up" style="animation-delay: 0.4s;">
+                <div class="card-header">
+                    <div class="method-logo qris-bg">
+                        <span class="text-logo">QRIS</span>
+                    </div>
+                    <span class="method-name">QRIS Auto Check</span>
+                </div>
+                <div class="card-body center-content">
+                    <div class="qr-container">
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=RomadzStorePayment" alt="QRIS Code">
+                    </div>
+                    <p class="scan-text" data-i18n="scanText">Scan untuk membayar</p>
+                    <a href="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=RomadzStorePayment" download="QRIS.png" class="btn-action download-btn" target="_blank">
+                        <i class="fa-solid fa-download"></i> <span data-i18n="btnDownload">Download QRIS</span>
+                    </a>
+                </div>
+            </div>
+
+        </main>
+
+        <section class="info-section slide-up" style="animation-delay: 0.5s;">
+            <div class="info-card">
+                <i class="fa-solid fa-circle-info info-icon"></i>
+                <div class="info-content">
+                    <h3 data-i18n="infoTitle">Petunjuk Penting</h3>
+                    <ul class="info-list">
+                        <li data-i18n="info1">Pastikan nominal transfer sesuai hingga 3 digit terakhir.</li>
+                        <li data-i18n="info2">Simpan bukti transfer sebagai referensi sah.</li>
+                        <li data-i18n="info3">Kami tidak bertanggung jawab atas kesalahan input nomor.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <footer class="confirmation-section slide-up" style="animation-delay: 0.6s;">
+            <p data-i18n="confirmText">Sudah melakukan pembayaran? Silakan konfirmasi.</p>
+            <div class="confirm-buttons">
+                <a href="#" class="btn-confirm whatsapp">
+                    <i class="fa-brands fa-whatsapp"></i> WhatsApp
+                </a>
+                <a href="#" class="btn-confirm telegram">
+                    <i class="fa-brands fa-telegram"></i> Telegram
+                </a>
+            </div>
+            <div class="copyright">
+                &copy; 2024 Romadz Store. All Rights Reserved.
+            </div>
+        </footer>
+
+    </div>
+
+    <script>
+        // ============================================
+        // JAVASCRIPT LOGIC
+        // ============================================
+        const translations = {
+            id: {
+                pageTitle: "Payment Romadz Store",
+                pageSubtitle: "Halaman Pembayaran Resmi & Aman",
+                btnCopy: "Salin Nomor",
+                btnCopied: "Berhasil Disalin!",
+                scanText: "Scan QRIS di atas dengan E-Wallet",
+                btnDownload: "Download QRIS",
+                infoTitle: "Petunjuk Penting",
+                info1: "Pastikan nominal transfer sesuai.",
+                info2: "Simpan bukti transfer sebagai referensi.",
+                info3: "Kesalahan transfer bukan tanggung jawab kami.",
+                confirmText: "Setelah melakukan pembayaran, silakan lakukan konfirmasi.",
+                langBtn: "EN"
+            },
+            en: {
+                pageTitle: "Romadz Store Payment",
+                pageSubtitle: "Official & Secure Payment Page",
+                btnCopy: "Copy Number",
+                btnCopied: "Copied!",
+                scanText: "Scan QRIS above with any E-Wallet",
+                btnDownload: "Download QRIS",
+                infoTitle: "Important Instructions",
+                info1: "Ensure the transfer amount is correct.",
+                info2: "Keep the transfer proof for reference.",
+                info3: "We are not responsible for transfer errors.",
+                confirmText: "After completing payment, please confirm below.",
+                langBtn: "ID"
+            }
+        };
+
+        let currentLang = 'id';
+        let currentTheme = localStorage.getItem('theme') || 'light';
+
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeIcon = themeToggle.querySelector('i');
+        const langToggle = document.getElementById('lang-toggle');
+        const langText = document.getElementById('lang-text');
+        const translatableElements = document.querySelectorAll('[data-i18n]');
+
+        function initTheme() {
+            if (currentTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+            }
+        }
+
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            themeIcon.style.transform = "rotate(360deg)";
+            setTimeout(() => themeIcon.style.transform = "rotate(0deg)", 300);
+
+            if (document.body.classList.contains('dark-mode')) {
+                currentTheme = 'dark';
+                themeIcon.classList.replace('fa-moon', 'fa-sun');
+            } else {
+                currentTheme = 'light';
+                themeIcon.classList.replace('fa-sun', 'fa-moon');
+            }
+            localStorage.setItem('theme', currentTheme);
+        });
+
+        langToggle.addEventListener('click', () => {
+            currentLang = currentLang === 'id' ? 'en' : 'id';
+            updateLanguage();
+            langToggle.style.transform = "scale(0.9)";
+            setTimeout(() => langToggle.style.transform = "scale(1)", 150);
+        });
+
+        function updateLanguage() {
+            langText.textContent = translations[currentLang].langBtn;
+            translatableElements.forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                el.style.opacity = 0;
+                setTimeout(() => {
+                    el.textContent = translations[currentLang][key];
+                    el.style.opacity = 1;
+                }, 200);
+            });
+        }
+
+        const copyButtons = document.querySelectorAll('.copy-btn');
+        copyButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const number = btn.getAttribute('data-number');
+                navigator.clipboard.writeText(number).then(() => {
+                    btn.innerHTML = `<i class="fa-solid fa-check"></i> ${translations[currentLang].btnCopied}`;
+                    btn.style.backgroundColor = "var(--success)";
+                    btn.style.color = "white";
+                    setTimeout(() => {
+                        btn.innerHTML = `<i class="fa-regular fa-copy"></i> ${translations[currentLang].btnCopy}`;
+                        btn.style.backgroundColor = "";
+                        btn.style.color = "";
+                    }, 2000);
+                });
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initTheme();
+            translatableElements.forEach(el => el.style.transition = "opacity 0.2s ease");
+        });
+    </script>
+</body>
+</html> 
